@@ -1,0 +1,9 @@
+.gradle
+.idea
+*.iml
+build/bin/libui/debugExecutable
+build/classes
+build/libs
+build/processedResources
+build/reports
+build/tmp
