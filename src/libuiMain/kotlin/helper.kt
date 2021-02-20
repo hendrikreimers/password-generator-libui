@@ -2,6 +2,17 @@ import kotlin.math.ceil
 import kotlin.random.Random
 
 /**
+ * Makes each char in the string unique and removes any others like space or A-Z and 0-9
+ *
+ */
+fun uniqueSpecialChars(value: String): String {
+    var result = value.toCharArray().distinct().joinToString("") // Unique characters only
+    result = Regex("[0-9a-zA-Z ]+").replace(result, "") // Only special chars and no space
+
+    return result
+}
+
+/**
  * Checks if a string includes only a number
  * and the number is inside given range
  *
@@ -70,7 +81,6 @@ fun generatePasswordList(
     pwLength: Int = 15,
     specialChars: String = "$%#?=;,:.-_+*&",
 ): List<String> {
-    println("RANDOM MADNESS")
     // Char list which only be used as first and last character in password generation
     val pwChars: String = (
             ('a'..'z') + ('A'..'Z') + (0..9) + specialChars

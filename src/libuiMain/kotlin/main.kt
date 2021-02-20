@@ -1,6 +1,8 @@
 import Config.Config
 import Config.Defaults
 import libui.ktx.*
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Simple password generator
@@ -38,13 +40,13 @@ fun main() = appWindow(
                 item(i.toString())
             }
 
-            value = config.get("passwordCount").toInt() - 1
+            value = max(1, min(config.get("passwordCount").toInt(), Defaults.maxPasswordCount)) - 1
         }
 
         // Input for min/max password length
         label("Password length:")
         pwLenInput = textfield {
-            value = config.get("passwordLength")
+            value = max(Defaults.minPasswordLength, min(config.get("passwordLength").toInt(), Defaults.maxPasswordLength)).toString()
             action {
                 // Disable generation button if value is not acceptable
                 genBtn.enabled = isStringNumberInRange(value, Defaults.minPasswordLength, Defaults.maxPasswordLength)
@@ -55,19 +57,20 @@ fun main() = appWindow(
         // Additional chars for PW generation
         label("Including special chars:")
         hbox {
+            val defaultSpecialChars = uniqueSpecialChars(config.get("specialChars"))
+
             additionalCharsInput = textfield {
-                value = config.get("specialChars")
+                value = defaultSpecialChars
                 stretchy = true
 
                 action {
-                    value = value.toCharArray().distinct().joinToString("") // Unique characters only
-                    value = Regex("[0-9a-zA-Z ]+").replace(value, "") // Only special chars and no space
+                    value = uniqueSpecialChars(value)
                 }
             }
 
             button("Reset") {
                 action {
-                    additionalCharsInput.value = config.get("specialChars")
+                    additionalCharsInput.value = defaultSpecialChars
                 }
             }
         }
