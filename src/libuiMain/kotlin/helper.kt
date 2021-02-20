@@ -41,7 +41,8 @@ fun generatePasswordList(
 ): List<String> {
     // Char list which only be used as first and last character in password generation
     val pwChars: String = (
-            ('a'..'z') + ('A'..'Z') + (0..9)
+            // großes I und kleines L are removed weil sie schwer auseinander zu halten sind
+            ('A'..'H') + ('J'..'Z') + ('a'..'k') + ('m'..'z') + (0..9)
         ).joinToString("")
 
     // Num of chars to remove from length for pre and post chars
