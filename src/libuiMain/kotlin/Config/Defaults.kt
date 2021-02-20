@@ -4,7 +4,7 @@ import libui.ktx.Combobox
 
 // Singleton used for default configuration and default generation
 object Defaults {
-    const val specialChars: String   = "$%#?=;,:.-_+*&"
+    const val specialChars: String   = "$%#?=;,:.-_+*&!~"
 
     const val passwordCount: Int     = 5  // Chars
     const val passwordLength: Int    = 25 // Chars
