@@ -60,3 +60,28 @@ fun generatePasswordList(
 
     return passwordList
 }
+
+/**
+ * Alternate password generation with full random option
+ *
+ */
+fun generatePasswordList(
+    pwCount: Int = 5,
+    pwLength: Int = 15,
+    specialChars: String = "$%#?=;,:.-_+*&",
+): List<String> {
+    println("RANDOM MADNESS")
+    // Char list which only be used as first and last character in password generation
+    val pwChars: String = (
+            ('a'..'z') + ('A'..'Z') + (0..9) + specialChars
+            ).joinToString("")
+
+    // Generates a list of passwords
+    val passwordList: List<String> = List(pwCount) {
+        List(pwLength) {
+            pwChars[ Random.nextInt(0, pwChars.length) ]
+        }.joinToString("")
+    }
+
+    return passwordList
+}

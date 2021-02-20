@@ -1,3 +1,5 @@
+import Config.Config
+import Config.Defaults
 import libui.ktx.*
 
 /**
@@ -13,8 +15,11 @@ fun main() = appWindow(
     width = 320,
     height = 440
 ) {
-    // Window not in fullscreen allowed
+    // Window not in fullscreen
     fullscreen = false
+
+    // Load configuration from file if possible
+    val config: Config = Config("password-generator.ini")
 
     // Some values need to be initialized lately to make them reusable
     lateinit var pwCountDropDown: Combobox
@@ -33,13 +38,13 @@ fun main() = appWindow(
                 item(i.toString())
             }
 
-            value = Defaults.passwordCount - 1
+            value = config.get("passwordCount").toInt() - 1
         }
 
         // Input for min/max password length
         label("Password length:")
         pwLenInput = textfield {
-            value = Defaults.passwordLength.toString()
+            value = config.get("passwordLength")
             action {
                 // Disable generation button if value is not acceptable
                 genBtn.enabled = isStringNumberInRange(value, Defaults.minPasswordLength, Defaults.maxPasswordLength)
@@ -51,7 +56,7 @@ fun main() = appWindow(
         label("Including special chars:")
         hbox {
             additionalCharsInput = textfield {
-                value = Defaults.specialChars
+                value = config.get("specialChars")
                 stretchy = true
 
                 action {
@@ -62,16 +67,20 @@ fun main() = appWindow(
 
             button("Reset") {
                 action {
-                    additionalCharsInput.value = Defaults.specialChars
+                    additionalCharsInput.value = config.get("specialChars")
                 }
             }
         }
 
         // Percentage use of special chars in password generation
-        label("Include of special chars:")
+        label("Include of special chars:") {
+            visible = ( config.get("fullRandom").toInt() <= 0 )
+        }
         percentSpecialChars = combobox {
             // Build dropdown item selections
             Defaults.percentSpecialItems(this)
+            value = config.get("percentSpecialChars").toInt()
+            visible = ( config.get("fullRandom").toInt() <= 0 )
         }
 
         // Action button
@@ -81,12 +90,18 @@ fun main() = appWindow(
                 resultTextArea.value = ""
 
                 // Generate list and push output to textbox
-                generatePasswordList(
+                val passwordList: List<String> = if ( config.get("fullRandom").toInt() <= 0 ) generatePasswordList(
                     pwCount               = pwCountDropDown.value + 1,
                     pwLength              = pwLenInput.value.toInt(),
                     specialChars          = additionalCharsInput.value,
                     percentOfSpecialChars = Defaults.getPercentComboValue(percentSpecialChars.value)
-                ).forEach { singlePassword ->
+                ) else generatePasswordList(
+                    pwCount               = pwCountDropDown.value + 1,
+                    pwLength              = pwLenInput.value.toInt(),
+                    specialChars          = additionalCharsInput.value
+                )
+
+                passwordList.forEach { singlePassword ->
                     // One password per line
                     resultTextArea.append("""|$singlePassword
                         |
