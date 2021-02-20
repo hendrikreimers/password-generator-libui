@@ -12,6 +12,8 @@ import platform.posix.*
  */
 data class File(private val filePath: String) {
 
+    private val MODE_READ: String? = "r"
+
     /**
      * Checks if file exists
      *
@@ -26,7 +28,7 @@ data class File(private val filePath: String) {
      */
     fun readAllText(): String {
         val returnBuffer = StringBuilder()
-        val file = fopen(filePath, "r") ?: throw IllegalArgumentException("Cannot open input file $filePath")
+        val file = fopen(filePath, MODE_READ) ?: throw IllegalArgumentException("Cannot open input file $filePath")
 
         try {
             memScoped {
