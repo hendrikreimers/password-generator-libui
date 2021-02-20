@@ -1,8 +1,6 @@
 import Config.Config
 import Config.Defaults
 import libui.ktx.*
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Simple password generator
@@ -40,13 +38,14 @@ fun main() = appWindow(
                 item(i.toString())
             }
 
-            value = max(1, min(config.get("passwordCount").toInt(), Defaults.maxPasswordCount)) - 1
+            value = config.get("passwordCount").between(1, Defaults.maxPasswordCount).toInt() - 1
         }
 
         // Input for min/max password length
         label("Password length:")
         pwLenInput = textfield {
-            value = max(Defaults.minPasswordLength, min(config.get("passwordLength").toInt(), Defaults.maxPasswordLength)).toString()
+            value = config.get("passwordLength").between(Defaults.minPasswordLength, Defaults.maxPasswordLength)
+
             action {
                 // Disable generation button if value is not acceptable
                 genBtn.enabled = isStringNumberInRange(value, Defaults.minPasswordLength, Defaults.maxPasswordLength)
