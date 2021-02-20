@@ -12,4 +12,4 @@ Simple Password generator build in kotlin native, using kotlin-libui.
 ![Screenshot](./screenshot.png?raw=true "")
 
 ## Final Build ##
-https://github.com/build/bin/libui/releaseExecutable/password-generator-libui.exe
+https://github.com/hendrikreimers/password-generator-libui/blob/main/build/bin/libui/releaseExecutable/password-generator-libui.exe?raw=true
