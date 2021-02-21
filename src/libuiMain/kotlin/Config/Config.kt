@@ -45,16 +45,15 @@ class Config(val fileName: String) {
      *
      */
     private fun parse(content: String): Map<String, Any?>? {
-        val exprOptions: Set<RegexOption> = setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.MULTILINE)
-        val expr: Regex = Regex("""^([^;\\n][a-zA-Z]+)([ ]?=[ ]?)(".*"|[0-9]{1,})$""", exprOptions)
+        val exprOptions: Set<RegexOption> = setOf(RegexOption.MULTILINE)
+        val expr: Regex = Regex("""^([^;\\n][a-zA-Z]+)([ ]?=[ ]?)(.+)$""", exprOptions)
         val matches: List<MatchResult> = expr.findAll(content).toList()
 
         return if (matches.isNotEmpty()) {
             val result: MutableMap<String, String?> = mutableMapOf()
-            val strExpr: Regex = Regex("""^"(.*)"$""")
 
             matches.map {
-                val value: String = it.groupValues[3].replace(strExpr, "$1").trim()
+                val value: String = it.groupValues[3].trim()
                 val key: String   = it.groupValues[1].trim()
 
                 if ( key == "percentSpecialChars" ) {

@@ -18,11 +18,10 @@ https://github.com/hendrikreimers/password-generator-libui/blob/main/build/bin/l
 
 Filename must be: ***password-generator.ini***
 
-    ; the following line is useless and optional
     [Defaults]
-
+    
     ; usage of special chars
-    ;specialChars = "$*#"
+    ;specialChars = $*#
     
     ; num of passwords to be generated
     passwordCount = 1
@@ -34,5 +33,7 @@ Filename must be: ***password-generator.ini***
     percentSpecialChars = 30
     
     ; optimized, normal, or random
-    mode = "optimized"
+    mode = optimized
+
+
 
