@@ -49,7 +49,7 @@ class Config(val fileName: String) {
         val expr: Regex = Regex("""^([^;\\n][a-zA-Z]+)([ ]?=[ ]?)(".*"|[0-9]{1,})$""", exprOptions)
         val matches: List<MatchResult> = expr.findAll(content).toList()
 
-        if (matches.isNotEmpty()) {
+        return if (matches.isNotEmpty()) {
             val result: MutableMap<String, String?> = mutableMapOf()
             val strExpr: Regex = Regex("""^"(.*)"$""")
 
@@ -60,10 +60,14 @@ class Config(val fileName: String) {
                 if ( key == "percentSpecialChars" ) {
                     result[key] = Defaults.getComboValueByPercent(value.toInt()).toString()
                 } else result[key] = value
+
+                if ( key == "mode" ) {
+                    result[key] = GeneratorMode.valueOf(value.toUpperCase()).modeKey.toString()
+                }
             }
 
-            return result.toMap()
-        } else return null
+            result.toMap()
+        } else null
     }
 }
 

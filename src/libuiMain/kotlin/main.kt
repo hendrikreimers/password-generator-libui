@@ -1,5 +1,6 @@
 import Config.Config
 import Config.Defaults
+import Config.GeneratorMode
 import libui.ktx.*
 
 /**
@@ -13,7 +14,7 @@ import libui.ktx.*
 fun main() = appWindow(
     title = "Password Generator",
     width = 320,
-    height = 440
+    height = 540
 ) {
     // Window not in fullscreen
     fullscreen = false
@@ -25,6 +26,7 @@ fun main() = appWindow(
     lateinit var pwCountDropDown: Combobox
     lateinit var pwLenInput: TextField
     lateinit var additionalCharsInput: TextField
+    lateinit var mode: Combobox
     lateinit var percentSpecialChars: Combobox
     lateinit var genBtn: Button
     lateinit var resultTextArea: TextArea
@@ -74,15 +76,27 @@ fun main() = appWindow(
             }
         }
 
-        // Percentage use of special chars in password generation
-        label("Include of special chars:") {
-            visible = ( config.get("fullRandom").toInt() <= 0 )
+        // Rendering mode selection
+        label("Render mode:")
+        mode = combobox {
+            for ( value in GeneratorMode.values() )
+                item(value.name.toLowerCase().capitalize())
+
+            value = config.get("mode").toInt()
+
+            action {
+                percentSpecialChars.enabled = ( value == GeneratorMode.OPTIMIZED.modeKey )
+            }
         }
+
+        // Percentage use of special chars in password generation
+        label("Include of special chars:")
         percentSpecialChars = combobox {
             // Build dropdown item selections
             Defaults.percentSpecialItems(this)
+
             value = config.get("percentSpecialChars").toInt()
-            visible = ( config.get("fullRandom").toInt() <= 0 )
+            enabled = ( config.get("mode").toInt() == GeneratorMode.OPTIMIZED.modeKey )
         }
 
         // Action button
@@ -92,15 +106,12 @@ fun main() = appWindow(
                 resultTextArea.value = ""
 
                 // Generate list and push output to textbox
-                val passwordList: List<String> = if ( config.get("fullRandom").toInt() <= 0 ) generatePasswordList(
+                val passwordList: List<String> = generatePasswordList(
                     pwCount               = pwCountDropDown.value + 1,
                     pwLength              = pwLenInput.value.toInt(),
                     specialChars          = additionalCharsInput.value,
+                    mode                  = mode.value,
                     percentOfSpecialChars = Defaults.getPercentComboValue(percentSpecialChars.value)
-                ) else generatePasswordList(
-                    pwCount               = pwCountDropDown.value + 1,
-                    pwLength              = pwLenInput.value.toInt(),
-                    specialChars          = additionalCharsInput.value
                 )
 
                 passwordList.forEach { singlePassword ->
