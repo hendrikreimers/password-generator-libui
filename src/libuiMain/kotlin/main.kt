@@ -1,6 +1,8 @@
 import Config.Config
 import Config.Defaults
 import Config.GeneratorMode
+import Windows.toClipboard
+import kotlinx.cinterop.memScoped
 import libui.ktx.*
 
 /**
@@ -100,25 +102,49 @@ fun main() = appWindow(
         }
 
         // Action button
-        genBtn = button("Generate passwords") {
-            action {
-                // Clear text area
-                resultTextArea.value = ""
+        hbox {
+            genBtn = button("Generate passwords") {
+                stretchy = true
 
-                // Generate list and push output to textbox
-                val passwordList: List<String> = generatePasswordList(
-                    pwCount               = pwCountDropDown.value + 1,
-                    pwLength              = pwLenInput.value.toInt(),
-                    specialChars          = additionalCharsInput.value,
-                    mode                  = mode.value,
-                    percentOfSpecialChars = Defaults.getPercentComboValue(percentSpecialChars.value)
-                )
+                action {
+                    // Clear text area
+                    resultTextArea.value = ""
 
-                passwordList.forEach { singlePassword ->
-                    // One password per line
-                    resultTextArea.append("""|$singlePassword
+                    // Generate list and push output to textbox
+                    val passwordList: List<String> = generatePasswordList(
+                        pwCount = pwCountDropDown.value + 1,
+                        pwLength = pwLenInput.value.toInt(),
+                        specialChars = additionalCharsInput.value,
+                        mode = mode.value,
+                        percentOfSpecialChars = Defaults.getPercentComboValue(percentSpecialChars.value)
+                    )
+
+                    passwordList.forEach { singlePassword ->
+                        // One password per line
+                        resultTextArea.append(
+                            """|$singlePassword
                         |
-                    """.trimMargin())
+                    """.trimMargin()
+                        )
+                    }
+                }
+            }
+
+            val clipboardBtnLabel: String = " Copy to Clipboard "
+            button(clipboardBtnLabel) {
+                action {
+                    memScoped {
+                        val cleanedValue: String = resultTextArea.value.trim().replace(Regex("[\n\r]$"), "")
+
+                        toClipboard(cleanedValue)
+
+                        text = "DONE"
+
+                        onTimer(1000) {
+                            text = clipboardBtnLabel
+                            false
+                        }
+                    }
                 }
             }
         }
