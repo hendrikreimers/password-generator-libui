@@ -38,9 +38,9 @@ private class PasswordGeneratorOptimized(): PasswordGeneratorInterface {
     override fun generatePasswords(pwCount: Int, pwLength: Int, specialChars: String, percentOfSpecialChars: Int): List<String> {
         // Char list which only be used as first and last character in password generation
         val pwChars: String = (
-                // großes I und kleines L are removed weil sie schwer auseinander zu halten sind
-                ('A'..'H') + ('J'..'Z') + ('a'..'k') + ('m'..'z') + (0..9)
-                ).joinToString("")
+            // großes I und kleines L are removed weil sie schwer auseinander zu halten sind
+            ('A'..'H') + ('J'..'Z') + ('a'..'k') + ('m'..'z') + (0..9)
+        ).joinToString("")
 
         // Num of chars to remove from length for pre and post chars
         val prePostLen: Int = 2
@@ -56,12 +56,12 @@ private class PasswordGeneratorOptimized(): PasswordGeneratorInterface {
 
             // Generate a random string based on the limit of general chars and minimum of special chars
             val charSequence: String = (
-                    List(pwLength - prePostLen - countOfSpecialChars) {
-                        pwChars.randomChar()
-                    } + List(countOfSpecialChars) {
-                        specialChars.randomChar()
-                    }
-                    ).shuffled(Random).joinToString("")
+                List(pwLength - prePostLen - countOfSpecialChars) {
+                    pwChars.randomChar()
+                } + List(countOfSpecialChars) {
+                    specialChars.randomChar()
+                }
+            ).shuffled(Random).joinToString("")
 
             // Put out result pretending the first char and the post char
             preChar + charSequence + postChar
@@ -78,9 +78,9 @@ private class PasswordGeneratorNormal(): PasswordGeneratorInterface {
     override fun generatePasswords(pwCount: Int, pwLength: Int, specialChars: String, percentOfSpecialChars: Int): List<String> {
         // Char list which only be used as first and last character in password generation
         var pwChars: String = (
-                // großes I und kleines L are removed weil sie schwer auseinander zu halten sind
-                ('A'..'Z') + ('a'..'z') + (0..9)
-                ).joinToString("")
+            // großes I und kleines L are removed weil sie schwer auseinander zu halten sind
+            ('A'..'Z') + ('a'..'z') + (0..9)
+        ).joinToString("")
 
         // Num of chars to remove from length for pre and post chars
         val prePostLen: Int = 2
@@ -96,10 +96,10 @@ private class PasswordGeneratorNormal(): PasswordGeneratorInterface {
 
             // Generate a random string based on the limit of general chars and minimum of special chars
             val charSequence: String = (
-                    List(pwLength - prePostLen) {
-                        pwChars.randomChar()
-                    }
-                    ).shuffled(Random).joinToString("")
+                List(pwLength - prePostLen) {
+                    pwChars.randomChar()
+                }
+            ).shuffled(Random).joinToString("")
 
             // Put out result pretending the first char and the post char
             preChar + charSequence + postChar
@@ -115,8 +115,8 @@ private class PasswordGeneratorRandom(): PasswordGeneratorInterface {
     override fun generatePasswords(pwCount: Int, pwLength: Int, specialChars: String, percentOfSpecialChars: Int): List<String> {
         // Char list which only be used as first and last character in password generation
         val pwChars: String = (
-                ('a'..'z') + ('A'..'Z') + (0..9) + specialChars
-                ).joinToString("")
+            ('a'..'z') + ('A'..'Z') + (0..9) + specialChars
+        ).joinToString("")
 
         // Generates a list of passwords
         return List(pwCount) {

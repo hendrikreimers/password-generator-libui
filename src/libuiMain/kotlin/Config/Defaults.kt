@@ -1,5 +1,6 @@
 package Config
 
+import Helper.getKey
 import libui.ktx.Combobox
 
 // Helps to generate the options and convert the configuration to the right key
@@ -25,6 +26,16 @@ object Defaults {
 
     private val generatorMode: Int          = GeneratorMode.OPTIMIZED.modeKey
 
+    private val percentComboValues: Map<Int, Int> = mapOf(
+        0 to 0,  // 0 %
+        1 to 5,  // 5 %
+        2 to 15, // 15 %
+        3 to 20, // 20 %
+        4 to 25, // 25 %
+        5 to 30, // 30 %
+        6 to 50  // 50 %
+    )
+
     /**
      * Returns the default value for an configuration value
      */
@@ -44,29 +55,20 @@ object Defaults {
 
     /**
      * Transforms the index of the combobox selection to the real result
-     *
+     * 2 -> 15, 4 -> 25, ...
      */
     fun getPercentComboValue(selectionValue: Int): Int = when ( selectionValue ) {
-        1 -> 5
-        2 -> 15
-        3 -> 20
-        4 -> 25
-        5 -> 30
-        6 -> 50
+        in percentComboValues.keys -> percentComboValues[selectionValue] ?: 0
         else -> 0
     }
 
     /**
      * Returns the index based on the percent value
+     * 15 -> 2, 25 -> 4, ....
      *
      */
     fun getComboValueByPercent(percent: Int): Int = when ( percent ) {
-        5 -> 1
-        15 -> 2
-        20 -> 3
-        25 -> 4
-        30 -> 5
-        50 -> 6
+        in percentComboValues.values -> percentComboValues.getKey(percent)
         else -> 0
     }
 
@@ -76,13 +78,7 @@ object Defaults {
      */
     fun percentSpecialItems(cb: Combobox) {
         cb.apply {
-            item("0 %")
-            item("5 %")
-            item("15 %")
-            item("20 %")
-            item("25 %")
-            item("30 %")
-            item("50 %")
+            percentComboValues.forEach { item("${it.value} %") }
         }
     }
 }
