@@ -1,6 +1,10 @@
 import Config.Config
 import Config.Defaults
 import Config.GeneratorMode
+import Helper.between
+import Helper.isStringNumberInRange
+import Password.PasswordGenerator
+import Password.PasswordGeneratorInterface
 import Windows.toClipboard
 import kotlinx.cinterop.memScoped
 import libui.ktx.*
@@ -111,20 +115,20 @@ fun main() = appWindow(
                     resultTextArea.value = ""
 
                     // Generate list and push output to textbox
-                    val passwordList: List<String> = generatePasswordList(
+                    val passwordList: List<String> = PasswordGenerator(mode.value).generatePasswords(
                         pwCount = pwCountDropDown.value + 1,
                         pwLength = pwLenInput.value.toInt(),
                         specialChars = additionalCharsInput.value,
-                        mode = mode.value,
                         percentOfSpecialChars = Defaults.getPercentComboValue(percentSpecialChars.value)
                     )
 
+                    // Output
                     passwordList.forEach { singlePassword ->
                         // One password per line
                         resultTextArea.append(
                             """|$singlePassword
-                        |
-                    """.trimMargin()
+                               |
+                            """.trimMargin()
                         )
                     }
                 }
@@ -136,12 +140,14 @@ fun main() = appWindow(
                     memScoped {
                         val cleanedValue: String = resultTextArea.value.trim().replace(Regex("[\n\r]$"), "")
 
+                        text    = "DONE"
+                        enabled = false
+
                         toClipboard(cleanedValue)
 
-                        text = "DONE"
-
                         onTimer(1000) {
-                            text = clipboardBtnLabel
+                            text    = clipboardBtnLabel
+                            enabled = true
                             false
                         }
                     }
