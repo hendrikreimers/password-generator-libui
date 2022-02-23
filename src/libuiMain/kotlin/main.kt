@@ -1,12 +1,15 @@
-import Config.Config
-import Config.Defaults
-import Config.GeneratorMode
-import Helper.between
-import Helper.isStringNumberInRange
-import Password.PasswordGenerator
-import Windows.toClipboard
+import config.Config
+import config.Defaults
+import config.GeneratorMode
+import helper.between
+import helper.isStringNumberInRange
+import password.PasswordGenerator
+import windows.control.toClipboard
 import kotlinx.cinterop.memScoped
 import libui.ktx.*
+import libui.uiQuit
+import windows.SimpleWindow
+import windows.ui.aboutWindow
 
 /**
  * Simple password generator
@@ -36,6 +39,27 @@ fun main() = appWindow(
     lateinit var genBtn: Button
     lateinit var resultTextArea: TextArea
 
+    // Define the available dialogs
+    val dialogs: Map<String, SimpleWindow> = mapOf(
+        "about" to aboutWindow()
+    )
+
+    // Set App closing handling to clear all resources
+    onClose {
+        dialogs.values.forEach { it.dispose() }
+        uiQuit()
+        true
+    }
+    onShouldQuit {
+        dialogs.values.forEach { it.hide() }
+        dispose()
+        true
+    }
+
+    /**
+     * The View
+     *
+     */
     vbox {
         // Select for count of passwords
         label("Number of Passwords:")
@@ -160,8 +184,16 @@ fun main() = appWindow(
             stretchy = true
         }
 
-        // Copyright ;-)
-        label("Made by Hendrik Reimers (CORE23.com)")
+        // A real menu is not really implemented yet in libui, so we use just buttons ;-)
+        hbox {
+            // Dialog: About
+            button(" About ") {
+                action {
+                    dialogs["about"]?.show()
+                }
+            }
+        }
+
     }
 }
 

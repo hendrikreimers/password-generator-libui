@@ -1,4 +1,4 @@
-package File
+package file
 
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.allocArray

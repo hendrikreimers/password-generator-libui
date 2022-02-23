@@ -1,10 +1,14 @@
-package Password
+package password
 
-import Config.GeneratorMode
-import Helper.randomChar
-import Helper.randomCharAsString
+import config.GeneratorMode
+import helper.randomChar
+import helper.randomCharAsString
 import kotlin.math.ceil
 import kotlin.random.Random
+
+interface PasswordGeneratorInterface {
+    fun generatePasswords(pwCount: Int, pwLength: Int, specialChars: String, percentOfSpecialChars: Int): List<String>
+}
 
 /**
  * Helper class that automaticly initiates the requested class and calls the function
