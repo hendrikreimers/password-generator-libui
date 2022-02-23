@@ -4,7 +4,6 @@ import Config.GeneratorMode
 import Helper.between
 import Helper.isStringNumberInRange
 import Password.PasswordGenerator
-import Password.PasswordGeneratorInterface
 import Windows.toClipboard
 import kotlinx.cinterop.memScoped
 import libui.ktx.*
